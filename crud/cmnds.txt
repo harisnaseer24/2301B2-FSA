@@ -1,0 +1,7 @@
+npm init -y
+npm install express --no-save
+npm i cors
+npm install --save-dev nodemon 
+npm i mongoose
+npm i dotenv
+npm install mongodb
