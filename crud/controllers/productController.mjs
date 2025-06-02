@@ -94,114 +94,63 @@ if (!delproduct) {
 }
 
 
-//  let getProduct=async(req,res)=>{
-// try {
-//     let id=req.params.id;
-// let product = await Product.find({_id:id});
-// if (!product) {
-//        res.status(404).json({message:"No products found"});
-// } else {
-//     res.status(200).json({
-//     message:"Our Products",
-//     product:product,
-// })
-// } 
-// } catch (error) {
-//    console.log(error) ;
-//    res.status(500).json({message:"Internal server errror"});
-// }
-// }
+// edit product
+ let editProduct=async(req,res)=>{
 
+    const id =req.params.id;
 
+try {
+let updatedProduct = new Product({
+    _id:id,
+     title:req.body.title,
+        description:req.body.description,
+        price:req.body.price,
+        discountPercentage:req.body.discountPercentage,
+        rating:req.body.rating,
+        stock:req.body.stock,
+        brand:req.body.brand,
+        category:req.body.category,
+        thumbnail:req.body.thumbnail,
+        images:req.body.images
 
+});
+let editprod = await Product.updateOne({_id:id},updatedProduct);
+if (!editprod) {
+       res.status(404).json({message:"Failed to update product"});
+} else {
 
+    res.status(200).json({
+    message:"Product updated successfully",
+    product:editprod,
+})
+} 
+} catch (error) {
+   console.log(error) ;
+   res.status(500).json({message:"Internal server errror"});
+}
+ }
 
-//  let addProduct=async(req,res)=>{
-// try {
-//     let newProduct= new Product({
-//         title:req.body.title,
-//         description:req.body.description,
-//         price:req.body.price,
-//         discountPercentage:req.body.discountPercentage,
-//         rating:req.body.rating,
-//         stock:req.body.stock,
-//         brand:req.body.brand,
-//         category:req.body.category,
-//         thumbnail:req.body.thumbnail,
-//         images:req.body.images
-//     })
-// let product = await Product.insertOne(newProduct);
+// Get products by brand 
+ let getProductsByBrand=async(req,res)=>{
+    const brandName = (req.params.brand);
+    // const brandName = (req.params.brand).toLowerCase();
 
-// if (!product) {
-//        res.status(404).json({message:"Failed to add product"});
-// } else {
-//         console.log(product)
-//     res.status(200).json({
-//     message:"Product added successfully",
-//     newProduct:product,
-// })
-// } 
-// } catch (error) {
-//    console.log(error) ;
-//    res.status(500).json({message:"Internal server errror"});
-// }
-// }
+try {
+let products = await Product.find({brand:brandName});
+if (products.length ==0) {
+       res.status(404).json({message:"No products found"});
+} else {
 
-
-//  let deleteProduct=async(req,res)=>{
-// try {
-//     const id = req.params.id;
-//     let product = await Product.deleteOne({_id:id});
-
-
-// if (!product) {
-//        res.status(404).json({message:"Failed to delete product"});
-// } else {
-//         console.log(product)
-//     res.status(200).json({
-//     message:"Product deleted successfully",
-//     deletedProduct:product,
-// })
-// } 
-// } catch (error) {
-//    console.log(error) ;
-//    res.status(500).json({message:"Internal server errror"});
-// }
-// }
-
-//  let editProduct=async(req,res)=>{
-//     const id=req.params.id;
-    
-// try {
-//     let editedProduct= new Product({
-//         _id:id,
-//         title:req.body.title,
-//         description:req.body.description,
-//         price:req.body.price,
-//         discountPercentage:req.body.discountPercentage,
-//         rating:req.body.rating,
-//         stock:req.body.stock,
-//         brand:req.body.brand,
-//         category:req.body.category,
-//         thumbnail:req.body.thumbnail,
-//         images:req.body.images
-//     })
-// let product = await Product.updateOne({_id:id},editedProduct);
-
-// if (!product) {
-//        res.status(404).json({message:"Failed to update product"});
-// } else {
-//         console.log(product)
-//     res.status(200).json({
-//     message:"Product updated successfully",
-//     editedProduct:product,
-// })
-// } 
-// } catch (error) {
-//    console.log(error) ;
-//    res.status(500).json({message:"Internal server errror"});
-// }
-// }
+    res.status(200).json({
+    message:`Our Products by ${brandName}`,
+    products:products,
+})
+} 
+} catch (error) {
+   console.log(error) ;
+   res.status(500).json({message:"Internal server errror"});
+}
+}
 
 
 
@@ -209,8 +158,7 @@ if (!delproduct) {
 
 
 
-
-const controller = { getAllProducts, getProduct, addProduct,deleteProduct};
+const controller = { getAllProducts, getProduct, addProduct,deleteProduct, editProduct, getProductsByBrand};
     // getProduct,addProduct,deleteProduct ,editProduct
     
 export default controller;
