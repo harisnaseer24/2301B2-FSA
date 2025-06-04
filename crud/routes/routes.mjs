@@ -13,6 +13,8 @@ router
 .put("/editproduct/:id",controller.editProduct)
 
 //user routes
+.get("/user/send-verification-email",userController.sendEmail)
+
 .post("/user/register",userController.registerUser)
 .post("/user/login",userController.loginUser)
 .patch("/user/deactivateUser/:userId/:status",userController.changeActivationStatus)

@@ -1,5 +1,7 @@
 
 import User from "../models/userModel.mjs"
+import nodemailer from "nodemailer"
+// import dotenv from "dotenv"
 
 // Signup 
  let registerUser=async(req,res)=>{
@@ -73,16 +75,30 @@ try {
 // change password
 // forgot password & reset
 //email verification
+const sendEmail = async (req,res) => {
+  const transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
 
+  let sendMailStatus= await transporter.sendMail({
+    from: `"Verify Email" <${process.env.EMAIL_USER}>`,
+  to:req.body.email,
+ subject: req.body.subject,
+    html:req.body.html,
+  });
+  if(sendMailStatus){
+    res.status(200).json({message:"Email sent successfully"})
+}else{
+      res.status(400).json({message:"Email sending failed"})
 
+  }
+};
 
-
-
-
-
-
-
-const userController = { registerUser,loginUser,changeActivationStatus};
+const userController = { registerUser,loginUser,changeActivationStatus,sendEmail};
     // getProduct,addProduct,deleteProduct ,editProduct
     
 export default userController;
