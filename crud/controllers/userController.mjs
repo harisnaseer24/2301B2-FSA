@@ -98,6 +98,11 @@ const sendEmail = async (req,res) => {
   }
 };
 
+//OTP Generation 
+// SendOTP
+// VerifyOTP
+// Expiry should be one minute
+
 const userController = { registerUser,loginUser,changeActivationStatus,sendEmail};
     // getProduct,addProduct,deleteProduct ,editProduct
     

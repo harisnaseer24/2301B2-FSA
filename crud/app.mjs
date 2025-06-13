@@ -2,13 +2,15 @@ import express from 'express'
 import router from './routes/routes.mjs'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
+import cors from 'cors'
 const app = express()
 
 dotenv.config()
 const port=process.env.PORT
 //body parser
 app.use(express.json())
-
+// enable cors middleware
+app.use(cors());
 main().catch(err => console.log(err));
 
 async function main() {

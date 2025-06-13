@@ -9,6 +9,7 @@ router
 .get("/product/:id",controller.getProduct)
 .get("/products/:brand",controller.getProductsByBrand)
 .post("/addproduct",controller.addProduct)
+.post("/addproductwithimage",controller.addProductWithImage)
 .delete("/deleteproduct/:id",controller.deleteProduct)
 .put("/editproduct/:id",controller.editProduct)
 
