@@ -55,6 +55,8 @@ let newProduct = new Product({
         images:req.body.images
 
 });
+
+
 let addprod = await Product.insertOne(newProduct);
 if (!addprod) {
        res.status(404).json({message:"Failed to add product"});

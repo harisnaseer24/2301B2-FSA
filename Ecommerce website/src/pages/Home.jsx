@@ -6,7 +6,7 @@ import BestSelling from '../components/BestSelling';
 import Products from '../components/Products';
 import Footer from '../components/Footer';
 import axios from "axios"
-import { useState } from "react";
+import { useState,useEffect } from "react";
 
 const Home = () => {
 const [myproducts, setProducts] = useState([]);

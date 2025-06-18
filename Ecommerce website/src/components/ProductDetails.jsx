@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { products } from "./Products";
+// import { products } from "./Products";
 import { useCart } from "./cartContext";
 import { useWishlist } from "./WishlistContext";
 

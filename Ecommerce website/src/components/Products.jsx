@@ -93,9 +93,9 @@ const Products = ({products}) => {
 
       {/* Products */}
       <div className="row">
-        {myproducts.map((item, index) => (
+        {products.map((item, index) => (
           <div className="col-md-3 mb-4" key={index}>
-            <Link to={`/product/${index}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+            {/* <Link to={`/product/${index}`} style={{ textDecoration: 'none', color: 'inherit' }}> */}
               <ProductCard
                 id={item._id}
                 img={item.thumbnail}
@@ -103,7 +103,7 @@ const Products = ({products}) => {
                 oldPrice={item.price}
                 newPrice={item.price - item.price * item.discountPercentage/100}
               />
-            </Link>
+            {/* </Link> */}
           </div>
         ))}
       </div>
