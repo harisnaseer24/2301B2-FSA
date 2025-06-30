@@ -3,12 +3,14 @@ import router from './routes/routes.mjs'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import cors from 'cors'
+import cookieParser from 'cookie-parser';
 const app = express()
 
 dotenv.config()
 const port=process.env.PORT
 //body parser
 app.use(express.json())
+app.use(cookieParser())
 // enable cors middleware
 app.use(cors());
 main().catch(err => console.log(err));

@@ -1,15 +1,16 @@
 import express from 'express';
 import controller from '../controllers/productController.mjs';
 import userController from '../controllers/userController.mjs';
+import { upload } from '../cloudinaryConfig.mjs';
 
 const router= express.Router();
 
 router
-.get("/",controller.getAllProducts)
+.get("/",userController.auth,controller.getAllProducts)
 .get("/product/:id",controller.getProduct)
 .get("/products/:brand",controller.getProductsByBrand)
 .post("/addproduct",controller.addProduct)
-.post("/addproductwithimage",controller.addProductWithImage)
+.post("/addproductwithimage",upload.single('image'),controller.addProductWithImage)
 .delete("/deleteproduct/:id",controller.deleteProduct)
 .put("/editproduct/:id",controller.editProduct)
 

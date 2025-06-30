@@ -69,16 +69,16 @@ useEffect(()=>{
       <th scope="row">{index + 1}</th>
       <td>{item.title}</td>
       <td>{item.description}</td>
-      <td>{item.thumnail}</td>
+      <td><img src={item.images} alt="" className='rounded-circle' height={40} /></td>
       <td>{item.price}</td>
       <td>{item.stock}</td>
       <td>{item.rating}</td>
       <td>{item.brand}</td>
       <td>{item.category}</td>
       <td>{item.discountPercentage}</td>
-      <td>
-        <button >Edit</button>
-        <button onClick={()=>{deleteProduct(item._id)}}>Delete</button>
+      <td scope="row">
+        <button className='btn btn-sm btn-danger'>Edit</button>
+        <button className='btn btn-sm btn-danger'onClick={()=>{deleteProduct(item._id)}}>Delete</button>
       </td>
      
     </tr>

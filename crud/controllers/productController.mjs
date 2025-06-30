@@ -155,47 +155,36 @@ if (products.length ==0) {
 }
 
  let addProductWithImage=async(req,res)=>{
-   
-
 try {
-    let img=req.body.image;
-cloudinary.config({ 
-        cloud_name: 'dhpxsped3', 
-        api_key: '861783791273133', 
-        api_secret: '4Jjxm0kdtFXfB4mQJkBgsDkgq-w' // Click 'View API Keys' above to copy your API secret
-    });
-    
-    // Upload an image
-     const uploadResult = await cloudinary.uploader
-       .upload(
-           'https://res.cloudinary.com/demo/image/upload/getting-started/', {
-               public_id: 'shoes',
-           }
-       )
-       .catch((error) => {
-           console.log(error);
-       });
-    
-    console.log(uploadResult);
-    
-    // Optimize delivery by resizing and applying auto-format and auto-quality
-    const optimizeUrl = cloudinary.url('shoes', {
-        fetch_format: 'auto',
-        quality: 'auto'
-    });
-    
-    console.log(optimizeUrl);
-    
-    // // Transform the image: auto-crop to square aspect_ratio
-    // const autoCropUrl = cloudinary.url('shoes', {
-    //     crop: 'auto',
-    //     gravity: 'auto',
-    //     width: 500,
-    //     height: 500,
-    // });
-    
-    // console.log(autoCropUrl);  
-    res.json({message:uploadResult}) 
+
+console.log(req.file.path);
+let newProduct = new Product({
+     title:req.body.title,
+        description:req.body.description,
+        price:req.body.price,
+        discountPercentage:req.body.discountPercentage,
+        rating:req.body.rating,
+        stock:req.body.stock,
+        brand:req.body.brand,
+        category:req.body.category,
+        thumbnail:req.file.path,
+        images:req.file.path
+
+});
+
+let addprod = await Product.insertOne(newProduct);
+if (!addprod) {
+       res.status(404).json({message:"Failed to add product"});
+} else {
+
+    res.status(200).json({
+    message:"Product added successfully",
+    product:addprod,
+})
+} 
+
+
+
 } catch (error) {
    console.log(error) ;
    res.status(500).json({message:"Internal server errror"});

@@ -1,6 +1,9 @@
 
 import User from "../models/userModel.mjs"
 import nodemailer from "nodemailer"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+
 // import dotenv from "dotenv"
 
 // Signup 
@@ -10,12 +13,15 @@ let user = await User.find({email: req.body.email});
 if (user.length == 1) {
        res.status(404).json({message:"User already exists"});
 } else {
-let newUser= new User({
+
+bcrypt.hash(req.body.password, 15).then(async function(hash) {
+    // Store hash in your password DB.
+    let newUser= new User({
     username: req.body.username,
     email: req.body.email,
-    password: req.body.password,
+    password: hash,
     profilePicture: req.body.profilePicture,
-    token: "98347293hhf43@*htwey834"
+  
 })
 let addUser = await User.insertOne(newUser);
 if(!addUser){
@@ -26,6 +32,7 @@ if(!addUser){
     newUser:addUser,
 })
 }
+});
 } 
 } catch (error) {
    console.log(error) ;
@@ -35,14 +42,32 @@ if(!addUser){
 // login 
  let loginUser=async(req,res)=>{
 try {  
-    let checkUser = await User.find({email:req.body.email, password:req.body.password});
+    let checkUser = await User.findOne({email:req.body.email});
+
     if(checkUser.length == 0){
           res.status(404).json({message:"User not found. Please register first."});
     }else {
+
+        const match =bcrypt.compareSync(req.body.password, checkUser.password);
+
+    if(match) {
+      const token = await jwt.sign({email: checkUser.email, _id: checkUser._id},process.env.JWT_SECRET,{ expiresIn: '12h'} )
+
+
+      
+  res.cookie("token",token, { maxAge: 43200, httpOnly: true})
         res.status(200).json({
             message:"User Logged in successfully",
             user :checkUser,
+            token:token,
         })
+    }else{
+       res.status(404).json({
+            message:"Invalid Credentials",
+           
+        })
+    }
+       
     }
 } 
  catch (error) {
@@ -50,6 +75,33 @@ try {
    res.status(500).json({message:"Internal server errror"});
 }
 }
+//Auth Middleware
+const auth=async (req, res, next)=>{
+  
+try {  
+  const token = await req.cookies.token;
+  const decode = await jwt.verify(token, process.env.JWT_SECRET);
+  if (decode) {
+    next();
+    
+  } else {
+    res.status(400).json({msg:"Invalid token"})
+    
+  }
+ 
+} 
+ catch (error) {
+   console.log(error) ;
+   res.status(500).json({message:"Internal server errror"});
+}
+
+
+}
+
+
+
+
+
 // deactivate/activate account
  let changeActivationStatus=async(req,res)=>{
 try {  
@@ -103,7 +155,7 @@ const sendEmail = async (req,res) => {
 // VerifyOTP
 // Expiry should be one minute
 
-const userController = { registerUser,loginUser,changeActivationStatus,sendEmail};
-    // getProduct,addProduct,deleteProduct ,editProduct
+const userController = { registerUser,loginUser,changeActivationStatus,sendEmail,auth};
+   
     
 export default userController;
