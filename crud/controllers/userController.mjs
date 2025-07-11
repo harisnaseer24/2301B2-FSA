@@ -44,14 +44,14 @@ if(!addUser){
 try {  
     let checkUser = await User.findOne({email:req.body.email});
 
-    if(checkUser.length == 0){
+    if(!checkUser){
           res.status(404).json({message:"User not found. Please register first."});
     }else {
 
         const match =bcrypt.compareSync(req.body.password, checkUser.password);
 
     if(match) {
-      const token = await jwt.sign({email: checkUser.email, _id: checkUser._id},process.env.JWT_SECRET,{ expiresIn: '12h'} )
+      const token = await jwt.sign({email: checkUser.email, _id: checkUser._id,role:checkUser.role},process.env.JWT_SECRET,{ expiresIn: '12h'} )
 
 
       
@@ -76,27 +76,49 @@ try {
 }
 }
 //Auth Middleware
-const auth=async (req, res, next)=>{
-  
-try {  
-  const token = await req.cookies.token;
-  const decode = await jwt.verify(token, process.env.JWT_SECRET);
-  if (decode) {
+    // const auth=async (req, res, next)=>{
+      
+    // try {  
+    //   const token = await req.cookies.token;
+    //   const decode = await jwt.verify(token, process.env.JWT_SECRET);
+    //   if (decode) {
+    //     next();
+        
+    //   } else {
+    //     res.status(400).json({msg:"Invalid token"})
+        
+    //   }
+    
+    // } 
+    // catch (error) {
+    //   console.log(error) ;
+    //   res.status(500).json({message:"Internal server errror"});
+    // }
+
+
+    // }
+
+    //through Authorization headers bearer
+    const auth = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ msg: 'Authorization token missing or malformed' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Optionally attach decoded data to request for downstream use
+    req.user = decoded;
+
     next();
-    
-  } else {
-    res.status(400).json({msg:"Invalid token"})
-    
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ msg: 'Invalid or expired token' });
   }
- 
-} 
- catch (error) {
-   console.log(error) ;
-   res.status(500).json({message:"Internal server errror"});
-}
-
-
-}
+};
 
 
 

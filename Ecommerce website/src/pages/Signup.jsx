@@ -44,6 +44,9 @@ const Signup = () => {
       setErrors(validationErrors);
     } else {
       setErrors({});
+
+
+      
       alert('Signup Successful! 🎉');
       console.log('Form Data:', formData);
     }
